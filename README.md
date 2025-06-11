@@ -14,8 +14,7 @@ Automates the daily routine of logging into Outlook Web, locating a specific e
 | 4    | Handle 2‑factor (TOTP)          | `pyotp`                                                    | Fallback locators for both single‑box and 6‑box layouts. |
 | 5    | Search mailbox                  | Query from **SEARCH\_CONTENT** env var                     | Clicks top result in message list.                       |
 | 6    | Open reading pane & follow link | Reliable XPath (`//div[@aria-label="Message body"]//a[1]`) | Works even if email template changes.                    |
-| 7    | Switch to new tab               | Window‑handle strategy                                     | Always operates on newest tab.                           |
-| 8    | Download target file            | CSS selector `.text-right.file-link > a`                   | Scrolls to bottom first.                                 |
+| 7    | Switch to new tab               | Window‑handle strategy                                     | Always operates on newest tab.                           |                                |
 
 ---
 
@@ -59,6 +58,8 @@ seleniumbase==4.*
 webdriver-manager==4.*
 python-dotenv==1.*
 pyotp==2.*
+selenium>=4.20.0
+undetected-chromedriver>=3.5.6
 ```
 
 ---
@@ -128,11 +129,6 @@ Downloaded files land in Chrome’s default download directory unless you custom
 
 Enable verbose SeleniumBase logs with `pytest -s` or set `--headless --uc-debug` flags for deeper diagnostics.
 
----
-
-## 📜 License
-
-This project is released under the **MIT License** — see the [LICENSE](LICENSE) file for details.
 
 ---
 
