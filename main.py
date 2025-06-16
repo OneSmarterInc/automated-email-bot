@@ -145,14 +145,23 @@ try:
     search_bar.click()
     time.sleep(5)
     search_bar.clear()
-    # For testing purpose
-    # search_bar.send_keys( "SECURE AmericanBenefitCorp INVENTORY '2025-06-09'")
     
-    #Dynamic search content
     search_date = datetime.today().strftime('%Y-%m-%d')
     search_bar.send_keys(f"SECURE AmericanBenefitCorp INVENTORY '{search_date}'")
     search_bar.send_keys(Keys.ENTER)
     print("Searched for content.")
+    
+    #Select Inbox filter
+    folders = wait.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="searchScopeButtonId-option"]/span')))
+    folders.click()
+    time.sleep(2)
+    Inbox = wait.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="searchScopeButtonId-list1"]/span/span')))
+    Inbox.click()
+    time.sleep(10)
+    # For testing purpose
+    # search_bar.send_keys( "SECURE AmericanBenefitCorp INVENTORY '2025-06-09'")
+    
+    #Dynamic search content
 
     time.sleep(5)
     #Select the first one div
