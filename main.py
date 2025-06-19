@@ -148,9 +148,13 @@ try:
     
     search_date = datetime.today().strftime('%Y-%m-%d')
     search_bar.send_keys(f"SECURE AmericanBenefitCorp INVENTORY '{search_date}'")
+    # For testing purpose2
+    # search_bar.send_keys(f"SECURE AmericanBenefitCorp INVENTORY '2025-06-18'")
     search_bar.send_keys(Keys.ENTER)
     print("Searched for content.")
     
+    
+    time.sleep(5)
     #Select Inbox filter
     folders = wait.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="searchScopeButtonId-option"]/span')))
     folders.click()
@@ -158,12 +162,9 @@ try:
     Inbox = wait.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="searchScopeButtonId-list1"]/span/span')))
     Inbox.click()
     time.sleep(10)
-    # For testing purpose
+    # For testing purpose2
     # search_bar.send_keys( "SECURE AmericanBenefitCorp INVENTORY '2025-06-09'")
     
-    #Dynamic search content
-
-    time.sleep(5)
     #Select the first one div
     try:
         first_search = wait.until(EC.element_to_be_clickable((By.XPATH, '//div[@role="listbox"]//div[@data-focusable-row="true"][1]')))
@@ -182,7 +183,6 @@ except TimeoutException:
 #Get Link from the Email
 try:
     time.sleep(3)
-    # link = wait.until(EC.element_to_be_clickable((By.LINK_TEXT, "Click here")))     # exact text or By.PARTIAL_LINK_TEXT, 'Click'
     link = wait.until(EC.element_to_be_clickable((By.XPATH, "//a[contains(text(), 'Click here')]")))
     secure_url = link.get_attribute("href")
     print("Opening secure URL directly: ")
@@ -205,7 +205,7 @@ try:
     print("Clicked on file.")
 
     #Wait while file downloads
-    wait_time = 20
+    wait_time = 30
     print(f"Waiting for {wait_time}s, while file is being downloaded.")
     time.sleep(wait_time)
     driver.quit()
