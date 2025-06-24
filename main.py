@@ -5,7 +5,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import TimeoutException
 from seleniumbase import Driver
-from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException
 import time
 import os
 from dotenv import load_dotenv
@@ -166,12 +166,68 @@ try:
     # search_bar.send_keys( "SECURE AmericanBenefitCorp INVENTORY '2025-06-09'")
     
     #Select the first one div
+    # try:
+    #     first_search = wait.until(EC.element_to_be_clickable((By.XPATH, '//div[@role="listbox"]//div[@data-focusable-row="true"][1]')))
+    #     first_search.click()
+    #     print("Selected first search result.")
+    # except NoSuchElementException:
+    #     print("Searched mail not found.")
+    #     driver.quit()
+    #     sys.exit(1)
+    
+    print(f"Looking for email containing date in subject title: {search_date}")
+
+    # Fetch all search results
     try:
-        first_search = wait.until(EC.element_to_be_clickable((By.XPATH, '//div[@role="listbox"]//div[@data-focusable-row="true"][1]')))
-        first_search.click()
-        print("Selected first search result.")
-    except NoSuchElementException:
-        print("Searched mail not found.")
+        email_results = wait.until(EC.presence_of_all_elements_located(
+            (By.XPATH, '//div[@role="listbox"]//div[@data-focusable-row="true"]')
+        ))
+    except TimeoutException:
+        print("No email results found.")
+        driver.quit()
+        sys.exit(1)
+
+    found = False
+
+    for i in range(len(email_results)):
+        try:
+            # Refresh the list to avoid stale element error
+            email_list = wait.until(EC.presence_of_all_elements_located(
+                (By.XPATH, '//div[@role="listbox"]//div[@data-focusable-row="true"]')
+            ))
+
+            email = email_list[i]
+            driver.execute_script("arguments[0].scrollIntoView(true);", email)
+            email.click()
+            time.sleep(5)
+
+            # Check the subject's title attribute for the date
+            try:
+                subject_span = wait.until(EC.presence_of_element_located(
+                    (By.XPATH, '//span[contains(@class, "JdFsz") and @title]')
+                ))
+                title_text = subject_span.get_attribute("title")  # e.g., "SECURE AmericanBenefitCorp INVENTORY '2025-06-23'"
+            except TimeoutException:
+                print("Title span not found.")
+                time.sleep(3)
+                continue
+
+            if search_date in title_text:
+                print(f"Found matching email with title: {title_text}")
+                found = True
+                break
+            else:
+                print(f"Email #{i+1} title does not match today's date ({search_date}). Found: {title_text}")
+                time.sleep(3)
+        except StaleElementReferenceException:
+            print(f"Skipping stale email #{i+1}")
+            continue
+        except Exception as e:
+            print(f"Error checking email #{i+1}: {str(e)}")
+            continue
+
+    if not found:
+        print("No email found with matching subject title date.")
         driver.quit()
         sys.exit(1)
         
@@ -179,7 +235,7 @@ except TimeoutException:
     print("Error during finding email.")
     driver.quit()
     sys.exit(1)
-
+ 
 #Get Link from the Email
 try:
     time.sleep(3)
