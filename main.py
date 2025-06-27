@@ -62,8 +62,8 @@ try:
     driver.get(web_url)
 
     print("Opening Website...")
-            
-    signIn_btn = wait.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="c-shellmenu_custom_outline_newtab_signin_bhvr100_right"]')))
+                                                                   
+    signIn_btn = wait.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="action-oc5b26"]/span')))
     signIn_btn.click()
     print("Moving to signIn steps")
     
